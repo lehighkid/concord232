@@ -229,7 +229,7 @@ def encode_message_to_ascii(bin_msg):
     s = ''
     for b in bin_msg:
         s += '%02x' % b
-    return s
+    return s.upper()
 
 def decode_message_from_ascii(ascii_msg):
     n = len(ascii_msg)
@@ -575,8 +575,21 @@ class AlarmPanelInterface(object):
         msg = build_keypress(keys, partition, area=0, no_check=True)
         self.enqueue_msg_for_tx(msg)
         
-    def arm_stay(self):
-        self.send_keypress([0x21])
+    def arm_stay(self,option):
+        if option == None:
+            self.send_keypress([0x02])
+        elif option == 'silent':
+            self.send_keypress([0x05, 0x02])
+        elif option == 'instant':
+            self.send_keypress([0x02, 0x04])
+
+    def arm_away(self,option):
+        if option == None:
+            self.send_keypress([0x03])
+        elif option == 'silent':
+            self.send_keypress([0x05, 0x03])
+        elif option == 'instant':
+            self.send_keypress([0x03, 0x04])
 
     def send_keys(self, keys, group):
         msg = []
